@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>4.4</version>
-    <date>2020-03-15T17:33:38Z</date>
+    <version>5.0</version>
+    <date>2022-01-11T20:49:36Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -33,7 +33,7 @@
                     <name>SSL certificate exist</name>
                     <type>EXTERNAL</type>
                     <key>frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}]</key>
-                    <delay>2h</delay>
+                    <delay>1h</delay>
                     <applications>
                         <application>
                             <name>SSL</name>
@@ -42,8 +42,13 @@
                     <triggers>
                         <trigger>
                             <expression>{last()}=0</expression>
-                            <name>SLL certificate unavailable for {$SSL.DNS}</name>
+                            <name>SSL certificate unavailable for {$SSL.DNS}</name>
                             <priority>HIGH</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{last()}=9999999999</expression>
+                            <name>{HOST.NAME} $SSL.DNS macro is missing</name>
+                            <priority>WARNING</priority>
                         </trigger>
                     </triggers>
                 </item>
@@ -51,8 +56,9 @@
                     <name>SSL expiration</name>
                     <type>EXTERNAL</type>
                     <key>frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}]</key>
-                    <delay>2h</delay>
+                    <delay>1h</delay>
                     <history>30d</history>
+                    <value_type>FLOAT</value_type>
                     <units>days</units>
                     <applications>
                         <application>
@@ -64,7 +70,7 @@
             <macros>
                 <macro>
                     <macro>{$SSL.AVG}</macro>
-                    <value>10</value>
+                    <value>3</value>
                     <description>number of days left before triggering average</description>
                 </macro>
                 <macro>
@@ -73,7 +79,7 @@
                 </macro>
                 <macro>
                     <macro>{$SSL.INFO}</macro>
-                    <value>60</value>
+                    <value>30</value>
                     <description>number of days left before triggering information</description>
                 </macro>
                 <macro>
@@ -83,7 +89,7 @@
                 </macro>
                 <macro>
                     <macro>{$SSL.WARN}</macro>
-                    <value>30</value>
+                    <value>7</value>
                     <description>number of days left before triggering warning</description>
                 </macro>
             </macros>
@@ -92,28 +98,23 @@
     <triggers>
         <trigger>
             <expression>{Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&lt;={$SSL.AVG} and {Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&gt;0 and {Template Module SSL:frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}].last()}=1</expression>
-            <name>{$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
+            <name>SSL certificate {$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
             <priority>AVERAGE</priority>
         </trigger>
         <trigger>
             <expression>{Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&lt;={$SSL.INFO} and {Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&gt;{$SSL.WARN} and {Template Module SSL:frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}].last()}=1</expression>
-            <name>{$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
+            <name>SSL certificate {$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
             <priority>INFO</priority>
         </trigger>
         <trigger>
             <expression>{Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&lt;={$SSL.WARN} and {Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&gt;{$SSL.AVG} and {Template Module SSL:frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}].last()}=1</expression>
-            <name>{$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
+            <name>SSL certificate {$SSL.DNS} expire in {ITEM.LASTVALUE}</name>
             <priority>WARNING</priority>
         </trigger>
         <trigger>
             <expression>{Template Module SSL:frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}].last()}=1 and {Template Module SSL:frogg_ssl_check.sh[-a=expire,-s={$SSL.DNS},-p={$SSL.PORT}].last()}&lt;=0</expression>
-            <name>{$SSL.DNS} is expired</name>
+            <name>SSL certificate {$SSL.DNS} is expired</name>
             <priority>HIGH</priority>
-        </trigger>
-        <trigger>
-            <expression>{Template Module SSL:frogg_ssl_check.sh[-a=exist,-s={$SSL.DNS},-p={$SSL.PORT}].last()}=9999999999</expression>
-            <name>{HOST.NAME} $SSL.DNS macro is missing</name>
-            <priority>WARNING</priority>
         </trigger>
     </triggers>
 </zabbix_export>
