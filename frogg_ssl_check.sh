@@ -84,7 +84,7 @@ function isSSLCertAvailable()
 timeout 5 bash -c \
  echo frogg | \
  openssl s_client -connect $1:$2 2>/dev/null | \
- grep subject | grep $1 \
+ grep subject | grep $1 >/dev/null 2>&1 \
  && echo 1 || echo 0
 }
 
