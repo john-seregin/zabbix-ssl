@@ -46,7 +46,7 @@ done
 for REQUIRE in ${REQUIRES[@]}
 do
  [ -z  ${PARAMS[$REQUIRE]} ] && echo 9999999999 && exit
-# Set the help for out of box usage 
+# Set the help for out of box usage
 #[ -z  ${PARAMS[$REQUIRE]} ] && PARAMS[-a]="help"
 done
 
@@ -84,7 +84,7 @@ function isSSLCertAvailable()
 timeout 5 bash -c \
  echo frogg | \
  openssl s_client -connect $1:$2 2>/dev/null | \
- openssl x509 >/dev/null 2>&1 \
+ grep subject | grep $1 \
  && echo 1 || echo 0
 }
 
