@@ -1,6 +1,6 @@
-### Zabbix Template Module SSL version 1.0.3
+### Zabbix Template Module SSL version 1.0.4
 
-Tested on Zabbix 4.4
+Tested on Zabbix 5.0
 
 # Introduction
 Template for zabbix to check SSL expiration using external script.
@@ -28,22 +28,22 @@ The template installation require 2 files:
 
 ## External script
 
-You need to place the script **frogg_ssl_check.sh** into zabbix external forlder **externalscripts** (by default in **/usr/lib/zabbix/externalscripts**) 
+You need to place the script **frogg_ssl_check.sh** into zabbix external forlder **externalscripts** (by default in **/usr/lib/zabbix/externalscripts**)
 
 You can find the external script folder in Zabbix configuration file **zabbix_server.conf** (by default in **/etc/zabbix/zabbix_server.conf**)
 
 You will need to add execute permission on the script
 ```bash
-chmod +x frogg_ssl_check.sh 
+chmod +x frogg_ssl_check.sh
 ```
 
 ### Testing the installation
 You can run the command:
-- To Test SSL certificate 
+- To Test SSL certificate
 ```bash
 ./frogg_ssl_check.sh -a=exist -s=frogg.fr -p=443
 ```
-- To get day left of ssl certificate 
+- To get day left of ssl certificate
 ```bash
 ./frogg_ssl_check.sh -a=expire -s=frogg.fr -p=443
 ```
@@ -56,7 +56,7 @@ The template use 5 macros :
 
 MACRO | Description | Default
 ----- | ----------- | -------
-{$SSL.DNS} | web server DNS name | 
+{$SSL.DNS} | web server DNS name |
 {$SSL.PORT} | server web ssl port | port 443
 {$SSL.INFO} | number of days left before triggering information | 60 days
 {$SSL.WARN} | number of days left before triggering warning | 30 days
